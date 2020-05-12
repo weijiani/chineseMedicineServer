@@ -3,10 +3,10 @@ var router = express.Router();
 var model = require('../model');
 /* GET users listing. */
 function postPayRecord (data,res){
-  let { username,createTime,pay,payWay,payDes} = data
+  let { username,createTime,pay,payWay,payDes,depName} = data
   console.log(data)
   model.connect(function(db){
-      db.collection('payRecord').insertOne({ username,createTime,pay,payWay,payDes},function(err,success){
+      db.collection('payRecord').insertOne({ username,createTime,pay,payWay,payDes,depName},function(err,success){
         if(err){
           res.send({
             resCode: 0,
@@ -65,7 +65,6 @@ router.get('/', function(req, res, next) {
           })
         }
     })
-    // postPayRecord(data,res)
   });
 
   router.post('/postPayRecord', function(req, res, next) {
@@ -77,7 +76,23 @@ router.get('/', function(req, res, next) {
 
   router.post('/getPayRecordList', function(req, res, next) {
     let data = req.body
+    console.log(data)
     model.connect(function(db){
+      if(data=={}){
+        db.collection('payRecord').find().toArray(function (err, result) {
+          if(err){
+              res.send({
+                  resCode: 0,
+                  des: "查询费用记录失败"
+              })
+          }else {
+            res.send({
+                resCode: 1,
+                payRecordList: result
+            }) 
+          }
+        })
+      }else{
         db.collection('payRecord').find(data).toArray(function (err, result) {
           if(err){
               res.send({
@@ -91,11 +106,28 @@ router.get('/', function(req, res, next) {
             }) 
           }
         })
+      }
+       
     })
   });
   router.post('/getAppointRecordList', function(req, res, next) {
     let data = req.body
     model.connect(function(db){
+      if(data=={}){
+        db.collection('appointmentRecord').find().toArray(function (err, result) {
+          if(err){
+              res.send({
+                  resCode: 0,
+                  des: "查询预约记录失败"
+              })
+          }else {
+            res.send({
+                resCode: 1,
+                appointRecordList: result
+            }) 
+          }
+        })
+      }else{
         db.collection('appointmentRecord').find(data).toArray(function (err, result) {
           if(err){
               res.send({
@@ -109,6 +141,8 @@ router.get('/', function(req, res, next) {
             }) 
           }
         })
+      }
+       
     })
   });
   router.post('/cancelAppoint', function(req, res, next) {
