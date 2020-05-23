@@ -23,9 +23,7 @@ function postPayRecord (data,res){
       })
   })
 }
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-  });
+
   
   router.post('/appointment', function(req, res, next) {
     let data = req.body
